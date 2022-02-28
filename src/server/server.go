@@ -1,18 +1,20 @@
 package server
 
 import (
-	"course_select/src/config"
-	router "course_select/src/router"
 	"io"
 	"os"
+	"review/src/config"
+	router "review/src/router"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Run(httpServer *gin.Engine) {
 
-	// 生成日志
-	logFile, _ := os.Create(config.GetLogPath())
+	// 生成日志，
+
+	logFile, _ := os.Create(config.GetLogPath()) //生成该路径下的文件，注意linux和windows的文件斜杠方向不同
+
 	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout, os.Stdin, os.Stderr)
 	// 设置日志格式
 	httpServer.Use(gin.LoggerWithFormatter(config.GetLogFormat))

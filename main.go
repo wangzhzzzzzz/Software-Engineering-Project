@@ -1,21 +1,11 @@
 package main
 
 import (
-	"course_select/src/database"
-	"course_select/src/server"
-
 	"github.com/gin-gonic/gin"
+	"review/src/server"
 )
 
 func main() {
-	// fmt.Println("Hello World")
-
-	defer func() {
-		database.MySqlDb.Close()
-		database.RedisClient.Close()
-	}()
-
-	httpServer := gin.Default()
-	server.Run(httpServer)
-
+	httpServer := gin.Default() //httpServer是路由引擎，提供网络处理能力
+	server.Run(httpServer)      //传入server包中的Run函数
 }
