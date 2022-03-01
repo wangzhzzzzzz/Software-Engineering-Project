@@ -1,8 +1,8 @@
 package model
 
 import (
-	"course_select/src/database"
-	types "course_select/src/global"
+	"project/src/database"
+	types "project/src/global"
 
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"

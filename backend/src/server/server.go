@@ -3,8 +3,8 @@ package server
 import (
 	"io"
 	"os"
-	"review/src/config"
-	router "review/src/router"
+	"project/src/config"
+	router "project/src/router"
 
 	"github.com/gin-gonic/gin"
 )

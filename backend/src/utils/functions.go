@@ -5,19 +5,9 @@ import (
 	"unicode"
 )
 
-// 测试函数
-
 func helloFunc() {
 	fmt.Println("Hello World!")
 }
-
-/*
-@title	StrIsLetter
-@description	判断string字符串是否均由字符组成
-@auth	马信宏	时间（2022/2/9   16:25 ）
-@param	str	string
-@return	无	bool
-*/
 
 func StrIsLetter(str string) bool {
 	for _, val := range str {
@@ -27,14 +17,6 @@ func StrIsLetter(str string) bool {
 	}
 	return true
 }
-
-/*
-@title	StrIsLowerLetterAndUpperLetterAndNumber
-@description	判断string字符串是否同时由字符或者数字组成
-@auth	马信宏	时间（2022/2/9   16:25 ）
-@param	str	string
-@return	无	bool
-*/
 
 func StrIsLowerLetterAndUpperLetterAndNumber(str string) bool {
 	isUpper, isLower, isNumber := false, false, false

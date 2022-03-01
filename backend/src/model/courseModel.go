@@ -1,9 +1,9 @@
 package model
 
 import (
-	"course_select/src/database"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
+	"project/src/database"
 )
 
 type Course struct {

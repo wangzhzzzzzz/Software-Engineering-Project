@@ -73,7 +73,7 @@ func GetRedisConfig() *RedisInfo {
 func GetLogPath() string {
 	timeObj := time.Now()
 	datetime := timeObj.Format("2006-01-02-15-04-05")
-	return "C:\\Users\\86139\\GolandProjects\\review\\" + datetime + ".log"
+	return "C:\\Users\\86139\\Desktop\\grade-3\\软件工程导论\\project\\" + datetime + ".log"
 }
 
 // GetLogFormat 设置日志格式
