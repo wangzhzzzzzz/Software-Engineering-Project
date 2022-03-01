@@ -1,8 +1,8 @@
 package database
 
 import (
-	"course_select/src/config"
 	"fmt"
+	"project/src/config"
 	"time"
 
 	"github.com/garyburd/redigo/redis"

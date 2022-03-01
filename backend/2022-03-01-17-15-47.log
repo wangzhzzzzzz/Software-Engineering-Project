@@ -1,0 +1,21 @@
+[GIN-debug] GET    /api/v1/ping              --> project/src/controller.Ping (5 handlers)
+[GIN-debug] POST   /api/v1/member/create     --> project/src/controller.CreateMember (5 handlers)
+[GIN-debug] POST   /api/v1/course/create     --> project/src/controller.CreateCourse (5 handlers)
+[GIN-debug] GET    /api/v1/member            --> project/src/controller.GetMember (5 handlers)
+[GIN-debug] GET    /api/v1/member/list       --> project/src/controller.GetMemberList (5 handlers)
+[GIN-debug] POST   /api/v1/member/update     --> project/src/controller.UpdateMember (5 handlers)
+[GIN-debug] POST   /api/v1/member/delete     --> project/src/controller.DeleteMember (5 handlers)
+[GIN-debug] POST   /api/v1/auth/login        --> project/src/controller.Login (5 handlers)
+[GIN-debug] POST   /api/v1/auth/logout       --> project/src/controller.Logout (5 handlers)
+[GIN-debug] GET    /api/v1/auth/whoami       --> project/src/controller.WhoAmI (5 handlers)
+[GIN-debug] GET    /api/v1/course/get        --> project/src/controller.GetCourse (5 handlers)
+[GIN-debug] POST   /api/v1/teacher/bind_course --> project/src/controller.BindCourse (5 handlers)
+[GIN-debug] POST   /api/v1/teacher/unbind_course --> project/src/controller.UnbindCourse (5 handlers)
+[GIN-debug] GET    /api/v1/teacher/get_course --> project/src/controller.GetTeacherCourse (5 handlers)
+[GIN-debug] POST   /api/v1/course/schedule   --> project/src/controller.ScheduleCourse (5 handlers)
+[GIN-debug] POST   /api/v1/student/book_course --> project/src/controller.BookCourse (5 handlers)
+[GIN-debug] GET    /api/v1/student/course    --> project/src/controller.GetStudentCourse (5 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on 0.0.0.0:8080
+127.0.0.1 - [Tue, 01 Mar 2022 17:16:15 CST] "GET /api/v1/ping HTTP/1.1 200 363.7µs "PostmanRuntime/7.28.4" "

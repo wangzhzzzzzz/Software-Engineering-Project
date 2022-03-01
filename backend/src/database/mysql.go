@@ -1,8 +1,8 @@
 package database
 
 import (
-	"course_select/src/config"
 	"fmt"
+	"project/src/config"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
