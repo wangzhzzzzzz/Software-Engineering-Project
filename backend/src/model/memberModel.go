@@ -1,8 +1,8 @@
 package model
 
 import (
-	"project/src/database"
-	types "project/src/global"
+	"backend/src/database"
+	types "backend/src/global"
 
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"

@@ -1,10 +1,10 @@
 package server
 
 import (
+	"backend/src/config"
+	router "backend/src/router"
 	"io"
 	"os"
-	"project/src/config"
-	router "project/src/router"
 
 	"github.com/gin-gonic/gin"
 )

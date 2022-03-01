@@ -1,7 +1,7 @@
 package validate
 
 import (
-	global "project/src/global"
+	global "backend/src/global"
 )
 
 var MemberValidate global.Validator

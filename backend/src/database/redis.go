@@ -1,8 +1,8 @@
 package database
 
 import (
+	"backend/src/config"
 	"fmt"
-	"project/src/config"
 	"time"
 
 	"github.com/garyburd/redigo/redis"

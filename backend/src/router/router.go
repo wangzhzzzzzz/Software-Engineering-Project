@@ -1,8 +1,8 @@
 package types
 
 import (
+	"backend/src/controller"
 	"github.com/gin-gonic/gin"
-	"project/src/controller"
 )
 
 func RegisterRouter(r *gin.Engine) {
