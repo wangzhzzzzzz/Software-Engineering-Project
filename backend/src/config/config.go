@@ -2,11 +2,12 @@ package config
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"gopkg.in/ini.v1"
 	"log"
 	"os"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"gopkg.in/ini.v1"
 )
 
 type MySQLInfo struct {
@@ -34,6 +35,14 @@ type RedisInfo struct {
 	MaxIdle    int
 	MaxActive  int
 	TimeOut    int
+	AUTH       string
+}
+
+type MQInfo struct {
+	HOST     string
+	PORT     string
+	PASSWORD string
+	USER     string
 }
 
 func GetServerConfig() *ServerInfo {
@@ -69,14 +78,12 @@ func GetRedisConfig() *RedisInfo {
 	return d
 }
 
-// GetLogPath 生成文件路径字符串
 func GetLogPath() string {
 	timeObj := time.Now()
 	datetime := timeObj.Format("2006-01-02-15-04-05")
-	return "C:\\Users\\86139\\Desktop\\grade-3\\软件工程导论\\project\\" + datetime + ".log"
+	return "logfile/Course_Select" + datetime + ".log"
 }
 
-// GetLogFormat 设置日志格式
 func GetLogFormat(param gin.LogFormatterParams) string {
 	return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
 		param.ClientIP,
@@ -89,4 +96,15 @@ func GetLogFormat(param gin.LogFormatterParams) string {
 		param.Request.UserAgent(),
 		param.ErrorMessage,
 	)
+}
+
+func GetRabbitMQConfig() *MQInfo {
+	cfg, err := ini.Load("configFile/config.ini")
+	if err != nil {
+		log.Printf("Fail to read file: %v \n", err)
+		os.Exit(1)
+	}
+	d := new(MQInfo)
+	_ = cfg.Section("rabbitmq").MapTo(d)
+	return d
 }

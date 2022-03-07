@@ -7,8 +7,8 @@ import (
 )
 
 type Course struct {
-	CourseID    string `json:"course_id" form:"course_id" gorm:"primary_key"`
-	TeacherID   string `json:"teacher_id" form:"teacher_id"`
+	CourseID int `json:"course_id" form:"course_id" gorm:"primary_key"`
+	// TeacherID   string `json:"teacher_id" form:"teacher_id"`
 	Name        string `json:"name" form:"name"`
 	Capacity    int    `json:"capacity" form:"capacity"`
 	CapSelected int    `json:"cap_select" form:"cap_select"`

@@ -5,6 +5,7 @@ type Bind struct {
 	CourseID  string `json:"course_id" form:"course_id" gorm:"primary_key"`
 }
 
+// 指定Bind类对应bind表
 func (Bind) TableName() string {
 	return "bind"
 }

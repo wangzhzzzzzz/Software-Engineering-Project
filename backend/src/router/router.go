@@ -2,6 +2,7 @@ package types
 
 import (
 	"backend/src/controller"
+	global "backend/src/global"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,8 +12,12 @@ func RegisterRouter(r *gin.Engine) {
 	//TEST
 	g.GET("/ping", controller.Ping)
 
-	g.POST("/member/create", controller.CreateMember)
-	g.POST("/course/create", controller.CreateCourse)
+	authGroup := g.Group("")
+	authGroup.Use(global.BackendAuth())
+	{
+		authGroup.POST("/member/create", controller.CreateMember)
+		authGroup.POST("/course/create", controller.CreateCourse)
+	}
 
 	// 成员管理
 	// g.POST("/member/create", controller.CreateMember)
