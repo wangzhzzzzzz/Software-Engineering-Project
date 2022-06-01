@@ -62,13 +62,6 @@ export default {
         console.log('err:', err.response.data.msg);
       });
       console.log('login');
-		// if(this.ruleForm.username=="admin"&&this.ruleForm.password=="123456"){
-		// 	window.localStorage.setItem("user",this.ruleForm.username)
-		// 	this.$router.push("/student")
-		// }else{
-		// 	this.$message.error("用户名和密码错误")
-		// }
-    
     },
   },
   created() {

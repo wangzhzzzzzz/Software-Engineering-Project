@@ -157,7 +157,7 @@ export default {
   },
   methods: {
     async initData(){
-      const api = '/api/v1/member/list';
+      const api = '/api/v1/student/list';
       this.axios.get(api,{
         params:{
           Offset:this.currentPage,
@@ -198,13 +198,13 @@ export default {
       console.log(data)
     },
      //编辑后点击确定按钮
-    submit(index, row) {
-      console("update confirm");
+    submit(index, row) {-
+      console.log("update confirm");
       console.log(index, row);
 
       //调用post方法
       const api = '/api/v1/member/update';
-      let params = 'userID=' + row.userID +'&name=' + row.name + '&NetID=' + row.NetID;
+      let params = 'userID=' + row.UserID +'&name=' + row.Name + '&NetID=' + row.NetID;
       console.log(params);
       this.axios.post(api, 
                       params,
@@ -224,6 +224,23 @@ export default {
     //点击删除
     del(index, row) {
       console.log(index, row);
+      //调用post方法
+      const api = '/api/v1/member/delete';
+      let params = 'userID=' + row.UserID;
+      console.log(params);
+      this.axios.post(api, 
+                      params,
+                      {headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'}}
+      ).then((res) => {
+          // this.dialog.show=false;
+          // location.reload();
+          console.log(res);
+          location.reload();
+      }).catch((err) => {
+          console.log('err:', err.response.data.msg);
+      });
+      console.log('deleteStudent');
+      
     },
     //点击修改
     showUpdate(index) {

@@ -7,10 +7,15 @@
 		  :modal-append-to-body="false"
 		  :visible.sync="dialog.show">
             <el-form label-width="100px" :rules="rule">
-			  <el-form-item label="课程名称" prop="Name">
-			    <el-input v-model="Name"></el-input>
+			  <el-form-item label="课程名称" prop="CourseName">
+			    <el-input v-model="CourseName"></el-input>
 			  </el-form-item>
-              
+              <el-form-item label="教工号" prop="TeacherID">
+			    <el-input v-model="TeacherID"></el-input>
+			  </el-form-item>
+              <el-form-item label="教师名称" prop="TeacherName">
+			    <el-input v-model="TeacherName"></el-input>
+			  </el-form-item>
 			  <el-form-item label="人数限制" prop="Capacity">
 			    <el-input v-model="Capacity"></el-input>
 			  </el-form-item>
@@ -31,20 +36,15 @@ export default {
 	},
     data(){
         return{
+            CourseName: "",
+            TeacherID: "",
+            TeacherName: "",
+            Capacity: "",
             dialogVisible: false,
             checkedtanchu:"",
             title:"",
             content:"",
             tanchucount:"",
-            tanchutype:[
-                {
-                    label:1,
-                    value:'已注销'
-                },{
-                    label:2,
-                    value:'未注销'
-                }
-           ],
            rule:{
                checkedtanchu:[{require:true,trigger:'blur'}],
                title:[{require:true,message:"请输入标题",trigger:"blur"}]

@@ -20,49 +20,74 @@
             ></el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="Name" sortable label="课程名称">
+        <el-table-column prop="CourseName" sortable label="课程名称">
           <template slot-scope="{ row, $index }">
-            <span v-if="!showEdit[$index]">{{ row.Name }}</span>
+            <span v-if="!showEdit[$index]">{{ row.CourseName }}</span>
             <el-input
               type="text"
-              v-model="row.Name"
+              v-model="row.CourseName"
               v-else
               placeholder="请输入课程名称"
             ></el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="Capacity" sortable label="课程容量">
+
+        <el-table-column prop="TeacherID" sortable label="教工号">
            <template slot-scope="{ row, $index }">
-            <span v-if="!showEdit[$index]">{{ row.Capacity }}</span>
+            <span v-if="!showEdit[$index]">{{ row.TeacherID }}</span>
             <el-input
               type="text"
-              v-model="row.Capacity"
+              v-model="row.TeacherID"
+              v-else
+              placeholder="请输入教工号"
+            ></el-input>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="TeacherName" sortable label="教师名称">
+           <template slot-scope="{ row, $index }">
+            <span v-if="!showEdit[$index]">{{ row.TeacherName }}</span>
+            <el-input
+              type="text"
+              v-model="row.TeacherName"
+              v-else
+              placeholder="请输入教师名称"
+            ></el-input>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="Cap" sortable label="课程容量">
+           <template slot-scope="{ row, $index }">
+            <span v-if="!showEdit[$index]">{{ row.Cap }}</span>
+            <el-input
+              type="text"
+              v-model="row.Cap"
               v-else
               placeholder="请输入课程容量"
             ></el-input>
           </template>
         </el-table-column>
         
-        <el-table-column prop="CapSelected" sortable label="已选人数">
+        <el-table-column prop="Selected" sortable label="已选人数">
           <template slot-scope="{ row, $index }">
-            <span v-if="!showEdit[$index]">{{ row.CapSelected }}</span>
+            <span v-if="!showEdit[$index]">{{ row.Selected }}</span>
             <el-input
               type="text"
-              v-model="row.CapSelected"
+              v-model="row.Selected"
               v-else
               placeholder=""
             ></el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="startime" sortable label="创建时间">
+        <el-table-column prop="CreateTime" sortable label="创建时间">
            <template slot-scope="{ row, $index }">
             <span v-if="!showEdit[$index]">
-              {{row.startime}}
+              {{row.CreateTime}}
             </span>
             <el-date-picker
               type="datetime"
               value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="row.startime"
+              v-model="row.CreateTime"
               v-else
               placeholder="创建时间"
             >
@@ -121,18 +146,22 @@ export default {
       tableData: [
         {
           CourseID:1001,
-          Name:"程序设计",
-          Capacity:"120",
-          CapSelected:"88",
-          startime:"2022-3-01 8:12:35",
+          CourseName:"程序设计",
+          TeacherID: 19335210,
+          TeacherName: "凌应标",
+          Cap:"120",
+          Selected:"88",
+          CreateTime:"2022-3-01 8:12:35",
           // endtime:"未注销"
         },
         {
           CourseID:1002,
-          Name:"离散数学",
-          Capacity:"90",
-          CapSelected:"70",
-          startime:"2022-3-01 8:12:35",
+          CourseName:"离散数学",
+          TeacherID: 19335211,
+          TeacherName: "蔡国扬",
+          Cap:"90",
+          Selected:"70",
+          CreateTime:"2022-3-01 8:12:35",
           // endtime:"已注销"
         },
         
@@ -146,7 +175,31 @@ export default {
       },
     };
   },
+  created(){
+      this.initData();
+  },
   methods: {
+    async initData(){
+      const api = '/api/v1/course/list';
+      this.axios.get(api,{
+        params:{
+          Offset:0,
+          Limit:20,
+        } 
+    }).then((response)=>{
+            console.log(response);
+            if(response.status === 200){
+                //获得成功响应返回的数据
+                console.log(response.data.Data.CourseList);
+
+                this.tableData = response.data.Data.CourseList;
+                console.log(this.tableData);
+
+            }
+        },(error)=>{
+            console.log('err:', err.response.data.msg);
+        });
+    },
     //分页
     pageChange (item) {
 	      this.currentPage = item.page_index;
