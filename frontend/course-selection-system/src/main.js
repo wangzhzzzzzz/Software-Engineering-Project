@@ -1,29 +1,26 @@
-import Vue from 'vue';
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
-import Vuelidate from 'vuelidate';
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
+import store from './store'
 
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 
-import App from './App.vue';
-import router from './router';
-import store from './store';
+import 'default-passive-events'
+// 引入 element-ui
+import ElementUI from 'element-ui'
+// 引入 element-ui 的 css 文件
+import 'element-ui/lib/theme-chalk/index.css';
+import VueCookies from 'vue-cookies';
 
-// import 'bootstrap/dist/css/bootstrap.css';
-// import 'bootstrap-vue/dist/bootstrap-vue.css';
-// scss styles for
-import './assets/scss/index.scss';
-
-Vue.config.productionTip = false;
-
-// Install BootstrapVue
-Vue.use(BootstrapVue);
-Vue.use(IconsPlugin);
-Vue.use(Vuelidate);
+// 声明使用 element-ui
+Vue.use(ElementUI);
 Vue.use(VueAxios, axios);
+Vue.use(VueCookies);
+Vue.config.productionTip = false
 
 new Vue({
   router,
   store,
-  render: (h) => h(App),
-}).$mount('#app');
+  render: h => h(App)
+}).$mount('#app')
