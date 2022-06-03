@@ -1,49 +1,104 @@
 package model
 
 import (
-	"project/src/database"
-	types "project/src/global"
-
-	"github.com/jinzhu/gorm"
-	uuid "github.com/satori/go.uuid"
+	"backend/src/database"
+	types "backend/src/global"
+	"errors"
+	"github.com/gomodule/redigo/redis"
+	"log"
+	"strconv"
+	"time"
 )
 
 type Member struct {
-	UserID    string         `json:"user_id" form:"user_id" gorm:"primary_key"`
-	Nickname  string         `json:"nickname" form:"nickname"`
-	Username  string         `json:"username" form:"username"`
-	Password  string         `json:"password" form:"password"`
-	UserType  types.UserType `json:"user_type" form:"user_type"`
-	IsDeleted bool           `json:"is_deleted" form:"is_deleted"`
+	UserID     int            `json:"user_id" gorm:"primary_key"`
+	Nickname   string         `json:"nickname"`
+	Username   string         `json:"username"`
+	Password   string         `json:"password"`
+	UserType   types.UserType `json:"user_type"`
+	CreateTime time.Time      `json:"create_time"`
+	IsDeleted  bool           `json:"is_deleted"`
 }
+
+var db = database.MySqlDb
+
+var MemberModel = Member{}
 
 func (Member) TableName() string {
 	return "member"
 }
-
-func (member *Member) BeforeCreate(scope *gorm.Scope) error {
-	uuid := uuid.NewV4().String()
-	return scope.SetColumn("user_id", uuid)
+func (member *Member) CreateMember() (string, error) {
+	result := Member{}
+	db.Where("username = ? ", member.Username).First(&result)
+	if result.UserID != 0 && !result.IsDeleted {
+		log.Println(errors.New("重名错误"), "in DeleteMember")
+		return "", errors.New("重名错误")
+	}
+	//创建一个member插入到表中
+	if err := database.MySqlDb.Create(&member).Error; err != nil {
+		return "", err
+	}
+	return strconv.Itoa(member.UserID), nil
 }
 
-// func md5V(str string) string {
-// 	h := md5.New()
-// 	h.Write([]byte(str))
-// 	return hex.EncodeToString(h.Sum(nil))
-// }
-
-func (model *Member) CreateMember(newMember Member) (string, error) {
-	return "不知道", nil
+func (member *Member) GetMemberByUsername(username string) (Member, error) {
+	var res = Member{}
+	err := database.MySqlDb.Where("username = ? ", username).First(&res).Error
+	return res, err
+}
+func (member *Member) GetMemberByUserID(UserID string) (Member, error) {
+	var res Member
+	ID, _ := strconv.Atoi(UserID)
+	//Scan，扫描结果至一个 struct就停止
+	err := database.MySqlDb.First(&Member{}, "user_id = ? ", ID).Scan(&res).Error
+	return res, err
 }
 
-/*
-@title	GetMember
-@description	基于user_id查询一个成员信息
-@auth	马信宏	时间(2022/2/10   14:42)
-*/
+// GetAllMembers 返回所有成员
+func (member *Member) GetAllMembers(offset, limit int) ([]Member, error) {
+	var ans []Member
+	err := database.MySqlDb.Limit(limit).Offset(offset).Find(&ans).Error
+	if err != nil {
+		return ans, err
+	}
+	return ans, nil
+}
 
-func GetMember(user_id string) (Member, error) {
-	var result Member
-	err := database.MySqlDb.First(&Member{}, "user_id = ?", user_id).Scan(&result).Error
-	return result, err
+func DeleteMember(user_id string) error {
+	var result = Member{}
+	db.Where("user_id = ? ", user_id).First(&result)
+	if result.UserID == 0 {
+		log.Println(errors.New("未找到该用户"), "in DeleteMember")
+		return errors.New("未找到该用户")
+	}
+	if result.IsDeleted == true {
+		log.Println(errors.New("用户已删除"), "in DeleteMember")
+		return errors.New("用户已删除")
+	}
+
+	id, _ := strconv.Atoi(user_id)
+	err := db.Model(&Member{}).Where("user_id = ?", id).Update("is_deleted", true).Error
+	return err
+}
+
+func UpdateMember(user_id string, nickname string, username string) error {
+	id, _ := strconv.Atoi(user_id)
+	var result = Member{}
+	db.Where(&Member{UserID: id}).First(&result)
+	if result.Nickname == "" {
+		return errors.New("未找到该用户")
+	}
+	if result.IsDeleted == true {
+		return errors.New("用户已删除")
+	}
+	err := db.Model(&Member{}).Where("user_id = ?", user_id).Updates(Member{Nickname: nickname, Username: username}).Error
+	return err
+}
+
+func AddStudentID(UserID string, rdb redis.Conn) {
+	rdb.Do("SADD", "LegalStudentID", UserID)
+}
+
+func RemoveStudentID(user_id string, rdb redis.Conn) {
+	rdb.Do("SREM", "LegalStudentID", user_id)
 }

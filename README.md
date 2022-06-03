@@ -22,3 +22,8 @@ yarn serve
 ```
 
 ## 关于后端
+```
+#编译
+go build
+#运行
+./backend

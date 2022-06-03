@@ -10,40 +10,50 @@ type ErrNo int
 
 const (
 	OK                 ErrNo = 0
-	ParamInvalid       ErrNo = 1   // 参数不合法
-	UserHasExisted     ErrNo = 2   // 该 Username 已存在
-	UserHasDeleted     ErrNo = 3   // 用户已删除
-	UserNotExisted     ErrNo = 4   // 用户不存在
-	WrongPassword      ErrNo = 5   // 密码错误
-	LoginRequired      ErrNo = 6   // 用户未登录
-	CourseNotAvailable ErrNo = 7   // 课程已满
-	CourseHasBound     ErrNo = 8   // 课程已绑定过
-	CourseNotBind      ErrNo = 9   // 课程未绑定过
-	PermDenied         ErrNo = 10   // 没有操作权限
-	StudentNotExisted  ErrNo = 11   // 学生不存在
-	CourseNotExisted   ErrNo = 12   // 课程不存在
-	StudentHasNoCourse ErrNo = 13  // 学生没有课程
-	StudentHasCourse   ErrNo = 14  // 学生有课程
+	ParamInvalid       ErrNo = 1  // 参数不合法
+	UserHasExisted     ErrNo = 2  // 该 Username 已存在
+	UserHasDeleted     ErrNo = 3  // 用户已删除
+	UserNotExisted     ErrNo = 4  // 用户不存在
+	WrongPassword      ErrNo = 5  // 密码错误
+	LoginRequired      ErrNo = 6  // 用户未登录
+	CourseNotAvailable ErrNo = 7  // 课程已满
+	CourseHasBound     ErrNo = 8  // 课程已绑定过
+	CourseNotBind      ErrNo = 9  // 课程未绑定过
+	PermDenied         ErrNo = 10 // 没有操作权限
+	StudentNotExisted  ErrNo = 11 // 学生不存在
+	CourseNotExisted   ErrNo = 12 // 课程不存在
+	StudentHasNoCourse ErrNo = 13 // 学生没有课程
+	StudentHasCourse   ErrNo = 14 // 学生有课程
 
-	UnknownError       ErrNo = 255 // 未知错误
+	UnknownError ErrNo = 255 // 未知错误
 )
-
 
 type ResponseMeta struct {
 	Code ErrNo
 }
 
 type TMember struct {
-	UserID   string
-	Nickname string
-	Username string
-	UserType UserType
+	UserID     string `json:"UserID"`
+	Nickname   string `json:"Name"`
+	Username   string `json:"NetID"`
+	UserType   UserType
+	CreateTime string `json:"StartTime"`
+	IsDeleted  string `json:"IsDeleted"`
 }
 
 type TCourse struct {
-	CourseID string
-	Name     string
+	CourseID  string
+	Name      string
 	TeacherID string
+}
+type TCourseAndTeacher struct {
+	CourseID    string
+	CourseName  string
+	TeacherID   string
+	TeacherName string
+	Cap         int
+	Selected    int
+	CreateTime  string
 }
 
 // -----------------------------------
@@ -67,10 +77,10 @@ const (
 // 只有管理员才能添加
 
 type CreateMemberRequest struct {
-	Nickname string   // required，不小于 4 位 不超过 20 位
-	Username string   // required，只支持大小写，长度不小于 8 位 不超过 20 位
-	Password string   // required，同时包括大小写、数字，长度不少于 8 位 不超过 20 位
-	UserType UserType // required, 枚举值
+	Nickname string   `form:"nickname" binding:"required"`
+	Username string   `form:"username" binding:"required"`
+	Password string   `form:"password" binding:"required"`
+	UserType UserType `form:"user_type" binding:"required"`
 }
 
 type CreateMemberResponse struct {
@@ -83,7 +93,7 @@ type CreateMemberResponse struct {
 // 获取成员信息
 
 type GetMemberRequest struct {
-	UserID string
+	UserID string `form:"userId" binding:"required"`
 }
 
 // 如果用户已删除请返回已删除状态码，不存在请返回不存在状态码
@@ -95,7 +105,7 @@ type GetMemberResponse struct {
 
 // 批量获取成员信息
 
-type GetMemberListRequest struct {
+type ListRequest struct {
 	Offset int
 	Limit  int
 }
@@ -110,8 +120,9 @@ type GetMemberListResponse struct {
 // 更新成员信息
 
 type UpdateMemberRequest struct {
-	UserID   string
-	Nickname string
+	UserID   string `form:"userID" binding:"required"`
+	Nickname string `form:"name" binding:"required"`
+	Username string `form:"NetID" binding:"required"`
 }
 
 type UpdateMemberResponse struct {
@@ -122,7 +133,7 @@ type UpdateMemberResponse struct {
 // 成员删除后，该成员不能够被登录且不应该不可见，ID 不可复用
 
 type DeleteMemberRequest struct {
-	UserID string
+	UserID string `form:"userID" binding:"required"`
 }
 
 type DeleteMemberResponse struct {
@@ -131,10 +142,10 @@ type DeleteMemberResponse struct {
 
 // ----------------------------------------
 // 登录
-
+//
 type LoginRequest struct {
-	Username string
-	Password string
+	Username string `form:"username" binding:"required"`
+	Password string `form:"password" binding:"required"`
 }
 
 // 登录成功后需要 Set-Cookie("camp-session", ${value})
@@ -174,9 +185,11 @@ type WhoAmIResponse struct {
 
 // 创建课程
 // Method: Post
-type CreateCourseRequest struct {
-	Name string
-	Cap  int
+type AddCourseRequest struct {
+	CourseName  string `form:"CourseName" binding:"required"`
+	Username    string `form:"NetID" binding:"required"`
+	TeacherName string `form:"TeacherName" binding:"required"`
+	Cap         int    `form:"Capacity" binding:"required"`
 }
 
 type CreateCourseResponse struct {
@@ -195,6 +208,13 @@ type GetCourseRequest struct {
 type GetCourseResponse struct {
 	Code ErrNo
 	Data TCourse
+}
+
+type GetCourseListResponse struct {
+	Code ErrNo
+	Data struct {
+		TeacherList []TMember
+	}
 }
 
 // 老师绑定课程
@@ -242,7 +262,7 @@ type ScheduleCourseRequest struct {
 
 type ScheduleCourseResponse struct {
 	Code ErrNo
-	Data map[string]string   // key 为 teacherID , val 为老师最终绑定的课程 courseID
+	Data map[string]string // key 为 teacherID , val 为老师最终绑定的课程 courseID
 }
 
 type BookCourseRequest struct {
@@ -263,6 +283,6 @@ type GetStudentCourseRequest struct {
 type GetStudentCourseResponse struct {
 	Code ErrNo
 	Data struct {
-		CourseList []TCourse
+		CourseList []TCourseAndTeacher
 	}
 }

@@ -1,8 +1,8 @@
 package database
 
 import (
+	"backend/src/config"
 	"fmt"
-	"project/src/config"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -11,6 +11,7 @@ import (
 var MySqlDb *gorm.DB
 var MySqlError error
 
+//
 func init() {
 	dbConfig := config.GetMySQLConfig()
 

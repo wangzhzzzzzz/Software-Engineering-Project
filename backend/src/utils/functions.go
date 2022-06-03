@@ -1,13 +1,8 @@
 package utils
 
 import (
-	"fmt"
 	"unicode"
 )
-
-func helloFunc() {
-	fmt.Println("Hello World!")
-}
 
 func StrIsLetter(str string) bool {
 	for _, val := range str {
@@ -18,6 +13,7 @@ func StrIsLetter(str string) bool {
 	return true
 }
 
+//
 func StrIsLowerLetterAndUpperLetterAndNumber(str string) bool {
 	isUpper, isLower, isNumber := false, false, false
 	for _, val := range str {

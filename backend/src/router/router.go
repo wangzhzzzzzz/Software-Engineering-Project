@@ -1,8 +1,9 @@
 package types
 
 import (
+	"backend/src/controller"
+	global "backend/src/global"
 	"github.com/gin-gonic/gin"
-	"project/src/controller"
 )
 
 func RegisterRouter(r *gin.Engine) {
@@ -11,21 +12,26 @@ func RegisterRouter(r *gin.Engine) {
 	//TEST
 	g.GET("/ping", controller.Ping)
 
-	g.POST("/member/create", controller.CreateMember)
-	g.POST("/course/create", controller.CreateCourse)
+	authGroup := g.Group("")
+	authGroup.Use(global.BackendAuth())
+	{
+		authGroup.POST("/member/create", controller.CreateMember)
+		authGroup.POST("/course/add", controller.AddCourse)
+		authGroup.POST("/member/update", controller.UpdateMember)
+		authGroup.POST("/member/delete", controller.DeleteMember)
+	}
 
 	// 成员管理
 	// g.POST("/member/create", controller.CreateMember)
 	g.GET("/member", controller.GetMember)
-	g.GET("/member/list", controller.GetMemberList)
-	g.POST("/member/update", controller.UpdateMember)
-	g.POST("/member/delete", controller.DeleteMember)
-
+	g.GET("/student/list", controller.GetStudentList)
+	g.GET("/teacher/list", controller.GetTeacherList)
+	g.GET("/course/list", controller.GetCourseList)
 	// 登录
 	g.POST("/auth/login", controller.Login)
 	g.POST("/auth/logout", controller.Logout)
 	g.GET("/auth/whoami", controller.WhoAmI)
-
+	//
 	// 排课
 	// g.POST("/course/create", controller.CreateCourse)
 	g.GET("/course/get", controller.GetCourse)

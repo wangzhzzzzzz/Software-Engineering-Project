@@ -1,21 +1,22 @@
 package validate
 
-import (
-	global "project/src/global"
-)
+import global "backend/src/global"
 
-var MemberValidate global.Validator
-
-func init() {
-	rules := map[string]string{
-		"Username": "required|minLen:4|maxLen:20|alpha",
-		"Nickname": "required|minLen:8|maxLen:20",
-		"UserType": "required",
-		"Password": "required|alphaNum|string:8,20|passwordValidator",
+// IsValidCreateMember 验证传入的CreateMemberRequest参数是否合法
+func IsValidCreateMember(param *global.CreateMemberRequest) bool {
+	if len(param.Nickname) < 4 || len(param.Nickname) > 20 {
+		return false
 	}
-
-	scenes := map[string][]string{}
-
-	MemberValidate.Rules = rules
-	MemberValidate.Scenes = scenes
+	if len(param.Username) < 8 || len(param.Username) > 20 {
+		return false
+	}
+	if len(param.Password) < 8 || len(param.Password) > 20 {
+		return false
+	}
+	if param.UserType < 1 || param.UserType > 3 {
+		return false
+	}
+	return true
 }
+
+//

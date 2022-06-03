@@ -8,3 +8,5 @@ type Choice struct {
 func (Choice) TableName() string {
 	return "choice"
 }
+
+//

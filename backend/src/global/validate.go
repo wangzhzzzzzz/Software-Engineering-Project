@@ -67,6 +67,7 @@ func (validator *Validator) ValidateRequest(c *gin.Context, scene string) (bool,
 	}
 }
 
+//
 func (f CreateMemberRequest) PasswordValidator(val string) bool {
 	isUpper, isLower, isNumber := false, false, false
 	for _, val := range val {
