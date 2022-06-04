@@ -1,11 +1,9 @@
 package model
 
 import (
-	"backend/src/database"
 	"github.com/jinzhu/gorm"
-	uuid "github.com/satori/go.uuid"
 	"log"
-	"strconv"
+	"sync"
 	"time"
 )
 
@@ -22,29 +20,42 @@ func (Course) TableName() string {
 	return "course"
 }
 
-func (course *Course) CreateCourse() (string, error) {
-	log.Println(course)
-	newcourse := *course
-	err := db.Create(&newcourse).Error
-	if err != nil {
-		log.Println(err)
-		return "", err
+type CourseDao struct {
+}
+
+var courseDao *CourseDao
+var courseOnce sync.Once
+
+func NewCourseDaoInstance() *CourseDao {
+	courseOnce.Do(
+		func() {
+			courseDao = &CourseDao{}
+		})
+	return courseDao
+}
+
+func (*CourseDao) CreateCourse(course *Course) error {
+	if err := db.Create(course).Error; err != nil {
+		log.Println("insert course err:" + err.Error())
+		return err
 	}
-	return strconv.Itoa(newcourse.CourseID), nil
+	return nil
 }
 
-func (course *Course) BeforeCreate(scope *gorm.Scope) error {
-	uuid := uuid.NewV4().String()
-	return scope.SetColumn("course_id", uuid)
+func (*CourseDao) GetCourse(CID int) (*Course, error) {
+	var course Course
+	err := db.Where("course_id = ?", CID).Find(&course).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	if err != nil {
+		log.Println("GetCourseByCourseID err:", err.Error())
+		return nil, err
+	}
+	return &course, nil
 }
-
-func GetCourse(course_id string) (Course, error) {
-	var result Course
-	err := database.MySqlDb.First(&Course{}, "course_id = ?", course_id).Scan(&result).Error
-	return result, err
-}
-func (course *Course) GetAllCourses(offset, limit int) ([]Course, error) {
-	var ans []Course
+func (*CourseDao) GetAllCourses(offset, limit int) ([]*Course, error) {
+	var ans []*Course
 	err := db.Limit(limit).Offset(offset).Find(&ans).Error
 	if err != nil {
 		return ans, err

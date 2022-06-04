@@ -1,12 +1,14 @@
 package model
 
 import (
-	"errors"
+	"github.com/jinzhu/gorm"
+	"log"
+	"sync"
 )
 
 type Bind struct {
-	TeacherID string `json:"teacher_id" form:"teacher_id" gorm:"primary_key"`
-	CourseID  string `json:"course_id" form:"course_id" gorm:"primary_key"`
+	TeacherID int `json:"teacher_id" form:"teacher_id" gorm:"primary_key"`
+	CourseID  int `json:"course_id" form:"course_id" gorm:"primary_key"`
 }
 
 //
@@ -15,11 +17,36 @@ func (Bind) TableName() string {
 	return "bind"
 }
 
-func (bind *Bind) BindCourse() error {
+type BindDao struct {
+}
 
-	result := db.Exec("INSERT IGNORE INTO bind(teacher_id,course_id) VALUES (?,?)", bind.TeacherID, bind.CourseID)
-	if result.RowsAffected == 0 {
-		return errors.New("CourseHasBound")
+var bindDao *BindDao
+var bindOnce sync.Once
+
+func NewBindDaoInstance() *BindDao {
+	bindOnce.Do(func() {
+		bindDao = &BindDao{}
+	})
+	return bindDao
+}
+
+func (*BindDao) BindCourse(bind *Bind) error {
+	if err := db.Create(bind).Error; err != nil {
+		log.Println("bind course err:" + err.Error())
+		return err
 	}
 	return nil
+}
+
+func (*BindDao) GetTeacherIDByCourseID(CID int) (int, error) {
+	var bind Bind
+	err := db.Where("course_id = ?", CID).Find(&bind).Error
+	if err == gorm.ErrRecordNotFound {
+		return 0, nil
+	}
+	if err != nil {
+		log.Println("GetTeacherIDByCourseID err:", err.Error())
+		return 0, err
+	}
+	return bind.TeacherID, nil
 }
