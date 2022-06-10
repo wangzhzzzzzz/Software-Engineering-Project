@@ -145,7 +145,7 @@ export default {
       ],
       showEdit: [], //控制页面修改显示隐藏
       currentPage: 1, //当前页数
-      pageSize: 10, //每页的数据
+      pageSize: 20, //每页的数据
       dialog: {
         show: false, //是否显示弹出框
         title: "", //弹出框的title

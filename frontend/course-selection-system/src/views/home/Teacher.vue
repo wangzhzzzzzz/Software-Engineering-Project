@@ -143,7 +143,7 @@ export default {
       ],
       showEdit: [], //控制页面修改显示隐藏
       currentPage: 1, //当前页数
-      pageSize: 10, //每页的数据
+      pageSize: 25, //每页的数据
       dialog: {
         show: false, //是否显示弹出框
         title: "", //弹出框的title
@@ -181,7 +181,7 @@ export default {
     AddNotice() {
       this.dialog = {
         show: true,
-        title: "添加学生信息", 
+        title: "添加教师信息", 
       };
     },
     getProfile(data) {

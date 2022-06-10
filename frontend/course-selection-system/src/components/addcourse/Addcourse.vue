@@ -54,6 +54,29 @@ export default {
      methods: {
         handleAddAndEdit(){
             //todo
+            if(this.TeacherName.length < 2 || this.TeacherName.length > 5){
+                alert("姓名长度不符合要求");
+                this.dialog.show=false;
+                return ;
+            }
+            if(this.TeacherID.length < 8 || this.TeacherID.length > 20){
+                alert("教工号长度不符合要求");
+                this.dialog.show=false;
+                return;
+            }
+            const api = '/api/v1/course/add';
+            let params = 'CourseName=' + this.CourseName +'&NetID=' + this.TeacherID + '&TeacherName=' + this.TeacherName + '&Capacity=' + this.Capacity;
+            console.log(params);
+            this.axios.post(api, 
+                            params,
+                            {headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'}}
+            ).then((res) => {
+                this.dialog.show=false;
+                location.reload();
+            }).catch((err) => {
+                console.log('err:', err.response.data.msg);
+            });
+            console.log('addStudent');
             this.dialog.show=false
         },
         handleClose() {
