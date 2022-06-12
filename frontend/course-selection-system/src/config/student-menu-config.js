@@ -1,0 +1,24 @@
+module.exports=[
+	    {
+			name:"用户信息管理",
+			id:"student",
+			icon:"el-icon-magic-stick",
+			submenu:[
+				{
+					name:"个人信息",
+					to:"/studentinfo"
+				},
+			]
+		},
+		{
+			name:"课程信息管理",
+			id:"course",
+			icon:"el-icon-magic-stick",
+			submenu:[
+				{
+					name:"选课信息",
+					to:"/studentcourse"
+				},
+			]
+		},
+]

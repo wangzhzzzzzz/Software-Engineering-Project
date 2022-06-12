@@ -106,13 +106,13 @@
               @click="showUpdate($index, row)"
               type="primary"
             >
-              <i class="el-icon-edit"></i>修改
+              <!-- <i class="el-icon-edit"></i>修改
             </el-button>
             <el-button
               v-if="!showEdit[$index]"
               @click="del($index, row)"
               type="danger"
-            >
+            > -->
               <i class="el-icon-delete"></i>删除
             </el-button>
             <el-button
@@ -214,11 +214,11 @@ export default {
     getProfile(data) {
       console.log(data)
     },
-     //编辑后点击确定按钮
-    submit(index, row) {
-      console.log(index, row);
-      this.$set(this.showEdit, index, false);
-    },
+    //  //编辑后点击确定按钮
+    // submit(index, row) {
+    //   console.log(index, row);
+    //   this.$set(this.showEdit, index, false);
+    // },
     //点击删除
     del(index, row) {
       console.log(index, row);

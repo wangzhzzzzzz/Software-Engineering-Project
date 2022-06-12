@@ -2,13 +2,13 @@
   <div class="home">
 	 <el-container :style="{height: 100 + 'vh' }">
 		<el-menu background-color="#304156" text-color="#fff" active-text-color="#09F7F7" default-active="1"
-			class="el-menu-vertical-demo" :collapse="isCollapse" unique-opened router :default-active="$route.path">
+			class="el-menu-vertical-demo" :collapse="isCollapse" unique-opened router>
 			<div>
 				<div class="biaoti" v-if="check">
 					<span style="font-size: 18px;color: white">学生选课管理系统</span>
 				</div>
 				<div class="biaoti" v-else>
-					<span style="font-size: 18px;color: white">系统</span>
+					<span style="font-size: 18px;color: white">教师管理系统</span>
 				</div>
 			</div>
 			<el-submenu v-for="item in menu" :index="item.id" :key="item.id">
