@@ -36,6 +36,10 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusOK, global.LoginResponse{Code: global.UserHasDeleted})
 		return
 	}
+	if int(memberGottenByUsername.UserType) != loginRequest.UserType {
+		c.JSON(http.StatusOK, "请再次选择身份")
+		return
+	}
 	session := sessions.Default(c)
 	var sessionId = getSessionId() //一个随机的uuid
 
@@ -56,7 +60,7 @@ func Login(c *gin.Context) {
 	}
 	c.SetCookie(cookiesName, sessionId, 3600, "/", "", false, true)
 	c.JSON(http.StatusOK, global.LoginResponse{
-		Code: http.StatusOK,
+		Code: global.OK,
 		Data: struct{ UserID string }{UserID: v.UserID},
 	})
 }

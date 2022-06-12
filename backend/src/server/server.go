@@ -6,6 +6,7 @@ import (
 	router "backend/src/router"
 	"encoding/gob"
 	"github.com/gin-gonic/gin"
+	_ "net/http/pprof"
 )
 
 func Run(httpServer *gin.Engine) {

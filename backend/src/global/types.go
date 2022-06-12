@@ -136,6 +136,10 @@ type DeleteMemberRequest struct {
 	UserID string `form:"userID" binding:"required"`
 }
 
+type DeleteCourseRequest struct {
+	CourseID string `form:"courseID" binding:"required"`
+}
+
 type DeleteMemberResponse struct {
 	Code ErrNo
 }
@@ -146,6 +150,7 @@ type DeleteMemberResponse struct {
 type LoginRequest struct {
 	Username string `form:"username" binding:"required"`
 	Password string `form:"password" binding:"required"`
+	UserType int    `form:"userType" binding:"required"`
 }
 
 // 登录成功后需要 Set-Cookie("camp-session", ${value})
@@ -266,8 +271,7 @@ type ScheduleCourseResponse struct {
 }
 
 type BookCourseRequest struct {
-	StudentID string
-	CourseID  string
+	CourseID int `form:"courseID" binding:"required"`
 }
 
 // 课程已满返回 CourseNotAvailable

@@ -14,7 +14,6 @@ var cookiesName string = "SE-Project"
 func BackendAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// fmt.Println(c.FullPath())
-
 		session := sessions.Default(c)
 		sessionId, err := c.Cookie(cookiesName)
 
@@ -34,13 +33,14 @@ func BackendAuth() gin.HandlerFunc {
 		}
 		// log.Println(v)
 		user := v.(TMember)
-
 		if user.UserType != Admin {
 			log.Println("第三个err有问题")
 			c.JSON(http.StatusOK, ResponseMeta{Code: PermDenied})
 			c.Abort()
 			return
 		}
+		c.Set("UserType", user.UserType)
+		c.Set("UserID", user.UserID)
 		c.Next()
 	}
 }

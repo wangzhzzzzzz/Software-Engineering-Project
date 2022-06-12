@@ -38,6 +38,16 @@ func (*BindDao) BindCourse(bind *Bind) error {
 	return nil
 }
 
+// UnBindCourse 取消与该课程所有的绑定记录
+func (*BindDao) UnBindCourse(CID int) error {
+	err := db.Where("course_id = ?", CID).Delete(&Bind{}).Error
+	if err != nil {
+		log.Println("DeleteCourse err:", err.Error())
+		return err
+	}
+	return nil
+}
+
 func (*BindDao) GetTeacherIDByCourseID(CID int) (int, error) {
 	var bind Bind
 	err := db.Where("course_id = ?", CID).Find(&bind).Error
@@ -49,4 +59,21 @@ func (*BindDao) GetTeacherIDByCourseID(CID int) (int, error) {
 		return 0, err
 	}
 	return bind.TeacherID, nil
+}
+func (*BindDao) GetCourseIDByTeacherID(TID int) ([]int, error) {
+	var bind []Bind
+	var ans []int
+	err := db.Where("teacher_id = ?", TID).Find(&bind).Error
+	if err == gorm.ErrRecordNotFound {
+		return ans, nil
+	}
+	if err != nil {
+		log.Println("GetTeacherIDByCourseID err:", err.Error())
+		return ans, err
+	}
+	ans = make([]int, len(bind))
+	for i, b := range bind {
+		ans[i] = b.CourseID
+	}
+	return ans, nil
 }

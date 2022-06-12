@@ -54,6 +54,25 @@ func (*CourseDao) GetCourse(CID int) (*Course, error) {
 	}
 	return &course, nil
 }
+
+//通过一组CID获得对应课程信息
+func (*CourseDao) MGetCourse(ids []int) ([]*Course, error) {
+	var courses []*Course
+	err := db.Where("course_id in (?)", ids).Find(&courses).Error
+	if err != nil {
+		log.Println("MGetCourse err:", err.Error())
+		return courses, err
+	}
+	return courses, nil
+}
+func (*CourseDao) DeleteCourse(CID int) error {
+	err := db.Where("course_id = ?", CID).Delete(&Course{}).Error
+	if err != nil {
+		log.Println("DeleteCourse err:", err.Error())
+		return err
+	}
+	return nil
+}
 func (*CourseDao) GetAllCourses(offset, limit int) ([]*Course, error) {
 	var ans []*Course
 	err := db.Limit(limit).Offset(offset).Find(&ans).Error
@@ -61,4 +80,13 @@ func (*CourseDao) GetAllCourses(offset, limit int) ([]*Course, error) {
 		return ans, err
 	}
 	return ans, nil
+}
+func (*CourseDao) UpdateCourseSelected(course *Course) error {
+	log.Println(*course)
+	err := db.Model(&Course{}).Where("course_id = ?", course.CourseID).Updates(Course{CapSelected: course.CapSelected + 1}).Error
+	if err != nil {
+		log.Println("UpdateCourseSelected出错")
+		return err
+	}
+	return nil
 }

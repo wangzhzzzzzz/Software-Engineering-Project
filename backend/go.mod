@@ -9,11 +9,12 @@ require (
 	github.com/gookit/validate v1.2.11
 	github.com/jinzhu/gorm v1.9.16
 	github.com/satori/go.uuid v1.2.0
-	gopkg.in/ini.v1 v1.66.4 
+	gopkg.in/ini.v1 v1.66.4
 )
 
 require (
 	github.com/boj/redistore v0.0.0-20180917114910-cd5dcc76aeff // indirect
+	github.com/gin-contrib/pprof v1.3.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect

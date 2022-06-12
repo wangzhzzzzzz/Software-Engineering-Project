@@ -3,10 +3,12 @@ package controller
 import (
 	global "backend/src/global"
 	"backend/src/model"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -15,6 +17,7 @@ func AddCourse(c *gin.Context) {
 	AddCourseRequest := global.AddCourseRequest{}
 	if err := c.ShouldBind(&AddCourseRequest); err != nil {
 		c.JSON(http.StatusOK, "Wrong parameters!")
+		return
 	}
 	//先判断教工号和教师名称是否合法
 	memberGotten, err := model.MemberModel.GetMemberByUsername(AddCourseRequest.Username)
@@ -59,16 +62,89 @@ func AddCourse(c *gin.Context) {
 	c.JSON(http.StatusOK, global.CreateCourseResponse{Code: global.OK, Data: struct{ CourseID string }{strconv.Itoa(course.CourseID)}})
 }
 
-func GetCourse(c *gin.Context) {
-
+func TeacherGetCourse(c *gin.Context) {
+	sessionId, err := c.Cookie(cookiesName)
+	if err != nil {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.LoginRequired})
+		return
+	}
+	//已经登出过了
+	session := sessions.Default(c)
+	Info := session.Get(sessionId) //Info is an interface{}
+	if Info == nil {
+		c.JSON(http.StatusOK, global.ResponseMeta{Code: global.LoginRequired})
+		return
+	}
+	user := Info.(global.TMember)
+	if user.UserType != global.Teacher {
+		c.JSON(http.StatusOK, "需要教师权限")
+		return
+	}
+	id, _ := strconv.Atoi(user.UserID)
+	CIDS, err := model.NewBindDaoInstance().GetCourseIDByTeacherID(id)
+	if err != nil {
+		log.Println("GetCourseIDByTeacherID err:", err)
+		c.JSON(http.StatusOK, "用户不存在")
+		return
+	}
+	courses, err := model.NewCourseDaoInstance().MGetCourse(CIDS)
+	if len(courses) == 0 {
+		log.Println("该老师没有课程")
+		c.JSON(http.StatusOK, "该老师没有课程")
+		return
+	}
+	if err != nil {
+		log.Println("批量查询时出错")
+		c.JSON(http.StatusOK, "批量查询时出错")
+		return
+	}
+	c.JSON(http.StatusOK, courses)
 }
 
 func BindCourse(c *gin.Context) {
 
 }
 
-func UnbindCourse(c *gin.Context) {
-
+func DeleteCourse(c *gin.Context) {
+	DeleteCourseRequest := global.DeleteCourseRequest{}
+	if err := c.ShouldBind(&DeleteCourseRequest); err != nil {
+		c.JSON(http.StatusOK, "Wrong parameters!")
+		return
+	}
+	//校验courseID是否合格，然后删掉course表和bind表中与该课程有关记录
+	CID, _ := strconv.Atoi(DeleteCourseRequest.CourseID)
+	course, err := model.NewCourseDaoInstance().GetCourse(CID)
+	if err != nil || course == nil {
+		log.Println("查询了不存在的课程,err:")
+		c.JSON(http.StatusOK, "课程不存在")
+		return
+	}
+	var wg sync.WaitGroup
+	wg.Add(2)
+	var UnBindCourseErr, DeleteCourseErr error
+	go func() {
+		defer wg.Done()
+		err := model.NewBindDaoInstance().UnBindCourse(CID)
+		if err != nil {
+			UnBindCourseErr = err
+			return
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		err := model.NewCourseDaoInstance().DeleteCourse(CID)
+		if err != nil {
+			DeleteCourseErr = err
+			return
+		}
+	}()
+	wg.Wait()
+	if UnBindCourseErr != nil || DeleteCourseErr != nil {
+		log.Println("DeleteCourse is Wrong")
+		c.JSON(http.StatusOK, "删除时发生错误！")
+		return
+	}
+	c.JSON(http.StatusOK, "删除成功")
 }
 
 func GetTeacherCourse(c *gin.Context) {

@@ -17,12 +17,16 @@ func RegisterRouter(r *gin.Engine) {
 	{
 		authGroup.POST("/member/create", controller.CreateMember)
 		authGroup.POST("/course/add", controller.AddCourse)
+		authGroup.POST("/course/delete", controller.DeleteCourse)
 		authGroup.POST("/member/update", controller.UpdateMember)
 		authGroup.POST("/member/delete", controller.DeleteMember)
+
 	}
 
 	// 成员管理
 	// g.POST("/member/create", controller.CreateMember)
+	g.GET("/auth/whoami", controller.WhoAmI)
+	g.GET("/course/get", controller.TeacherGetCourse)
 	g.GET("/member", controller.GetMember)
 	g.GET("/student/list", controller.GetStudentList)
 	g.GET("/teacher/list", controller.GetTeacherList)
@@ -30,14 +34,12 @@ func RegisterRouter(r *gin.Engine) {
 	// 登录
 	g.POST("/auth/login", controller.Login)
 	g.POST("/auth/logout", controller.Logout)
-	g.GET("/auth/whoami", controller.WhoAmI)
+
 	//
 	// 排课
 	// g.POST("/course/create", controller.CreateCourse)
-	g.GET("/course/get", controller.GetCourse)
 
 	g.POST("/teacher/bind_course", controller.BindCourse)
-	g.POST("/teacher/unbind_course", controller.UnbindCourse)
 	g.GET("/teacher/get_course", controller.GetTeacherCourse)
 	g.POST("/course/schedule", controller.ScheduleCourse)
 
