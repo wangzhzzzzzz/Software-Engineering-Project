@@ -101,10 +101,6 @@ func TeacherGetCourse(c *gin.Context) {
 	c.JSON(http.StatusOK, courses)
 }
 
-func BindCourse(c *gin.Context) {
-
-}
-
 func DeleteCourse(c *gin.Context) {
 	DeleteCourseRequest := global.DeleteCourseRequest{}
 	if err := c.ShouldBind(&DeleteCourseRequest); err != nil {
@@ -145,14 +141,6 @@ func DeleteCourse(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, "删除成功")
-}
-
-func GetTeacherCourse(c *gin.Context) {
-
-}
-
-func ScheduleCourse(c *gin.Context) {
-
 }
 
 func GetCourseList(c *gin.Context) {
